@@ -34,14 +34,29 @@ public class IgniteCacheFailoverTestSuite extends TestSuite {
     public static TestSuite suite() throws Exception {
         TestSuite suite = new TestSuite("Cache Failover Test Suite");
 
+        suite.addTestSuite(GridCacheAtomicInvalidPartitionHandlingSelfTest.class);
+
+        // Group lock failover.
+        // TODO: IGNITE-80.
+        //suite.addTestSuite(GridCacheGroupLockFailoverSelfTest.class);
+        //suite.addTestSuite(GridCacheGroupLockFailoverOptimisticTxSelfTest.class);
+
+        suite.addTestSuite(GridCacheIncrementTransformTest.class);
+
+        // Failure consistency tests.
+        suite.addTestSuite(GridCacheAtomicRemoveFailureTest.class);
+        suite.addTestSuite(GridCacheAtomicPrimaryWriteOrderRemoveFailureTest.class);
+
+        suite.addTestSuite(GridCacheDhtAtomicRemoveFailureTest.class);
+        suite.addTestSuite(GridCacheDhtRemoveFailureTest.class);
+        // TODO: IGNITE-80.
+        // suite.addTestSuite(GridCacheNearRemoveFailureTest.class);
         suite.addTestSuite(GridCacheAtomicNearRemoveFailureTest.class);
-        suite.addTestSuite(GridCacheAtomicNearRemoveFailureTest.class);
-        suite.addTestSuite(GridCacheAtomicNearRemoveFailureTest.class);
-        suite.addTestSuite(GridCacheAtomicNearRemoveFailureTest.class);
-        suite.addTestSuite(GridCacheAtomicNearRemoveFailureTest.class);
-        suite.addTestSuite(GridCacheAtomicNearRemoveFailureTest.class);
-        suite.addTestSuite(GridCacheAtomicNearRemoveFailureTest.class);
-        suite.addTestSuite(GridCacheAtomicNearRemoveFailureTest.class);
+        suite.addTestSuite(GridCacheAtomicPrimaryWriteOrderNearRemoveFailureTest.class);
+
+        //suite.addTest(new TestSuite(GridCachePartitionedFailoverSelfTest.class));  TODO-gg-4813
+        //suite.addTest(new TestSuite(GridCacheColocatedFailoverSelfTest.class)); TODO-gg-4813
+        //suite.addTestSuite(GridCacheReplicatedFailoverSelfTest.class); TODO-gg-4813
 
         return suite;
     }
