@@ -82,6 +82,8 @@ public class IgfsFileWorker extends IgfsThread {
     /** {@inheritDoc} */
     @Override protected void body() throws InterruptedException {
         while (!cancelled) {
+            IgfsFileWorkerBatch batch = null;
+
             lock.lock();
 
             try {
@@ -90,18 +92,16 @@ public class IgfsFileWorker extends IgfsThread {
                     cond.await(THREAD_REUSE_WAIT_TIME, TimeUnit.MILLISECONDS);
 
                 curBatch = nextBatch;
-
                 nextBatch = null;
 
-                if (cancelled && curBatch != null)
-                    curBatch.finish(); // Mark the batch as finished if cancelled.
+                batch = curBatch;
             }
             finally {
                 lock.unlock();
             }
 
-            if (curBatch != null)
-                curBatch.process();
+            if (batch != null)
+                batch.process(); // Batch is processed outside the lock.
             else {
                 lock.lock();
 
@@ -119,39 +119,59 @@ public class IgfsFileWorker extends IgfsThread {
 
     /** {@inheritDoc} */
     @Override protected void cleanup() {
-        // Clear interrupted flag.
-        boolean interrupted = interrupted();
+        boolean interrupted = interrupted(); // Clear interrupted flag for a while so that lock ops succeed.
 
-        // Process the last batch if any.
-        if (nextBatch != null)
-            nextBatch.process();
+        try {
+            cancel(); // Cancel batches if needed.
 
-        onFinish();
+            // Ensure batches are processed anyway.
+            IgfsFileWorkerBatch curBatch0;
+            IgfsFileWorkerBatch nextBatch0;
 
-        // Reset interrupted flag.
-        if (interrupted)
-            interrupt();
+            lock.lock();
+
+            try {
+                curBatch0 = curBatch;
+                nextBatch0 = nextBatch;
+            }
+            finally {
+                lock.unlock();
+            }
+
+            processBatchQuiet(curBatch0);
+            processBatchQuiet(nextBatch0);
+
+            onFinish();
+        }
+        finally {
+            if (interrupted)
+                interrupt();
+        }
     }
 
     /**
      * Forcefully finish execution of all batches.
      */
     void cancel() {
-        lock.lock();
+        if (!cancelled) {
+            lock.lock();
 
-        try {
-            cancelled = true;
+            try {
+                if (!cancelled) {
+                    cancelled = true;
 
-            if (curBatch != null)
-                curBatch.finish();
+                    if (curBatch != null)
+                        curBatch.finish();
 
-            if (nextBatch != null)
-                nextBatch.finish();
+                    if (nextBatch != null)
+                        nextBatch.finish();
 
-            cond.signalAll(); // Awake the main loop in case it is still waiting for the next batch.
-        }
-        finally {
-            lock.unlock();
+                    cond.signalAll(); // Awake the main loop in case it is still waiting for the next batch.
+                }
+            }
+            finally {
+                lock.unlock();
+            }
         }
     }
 
@@ -176,5 +196,21 @@ public class IgfsFileWorker extends IgfsThread {
      */
     protected void onFinish() {
         // No-op.
+    }
+
+    /**
+     * Process batch quietly.
+     *
+     * @param batch Batch.
+     */
+    private void processBatchQuiet(IgfsFileWorkerBatch batch) {
+        if (batch != null) {
+            try {
+                batch.process();
+            }
+            catch (Exception ignore) {
+                // No-op.
+            }
+        }
     }
 }
