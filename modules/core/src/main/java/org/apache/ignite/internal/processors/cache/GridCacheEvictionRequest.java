@@ -160,19 +160,19 @@ public class GridCacheEvictionRequest extends GridCacheMessage implements GridCa
         }
 
         switch (writer.state()) {
-            case 3:
+            case 4:
                 if (!writer.writeCollection("entries", entries, MessageCollectionItemType.MSG))
                     return false;
 
                 writer.incrementState();
 
-            case 4:
+            case 5:
                 if (!writer.writeLong("futId", futId))
                     return false;
 
                 writer.incrementState();
 
-            case 5:
+            case 6:
                 if (!writer.writeMessage("topVer", topVer))
                     return false;
 
@@ -194,7 +194,7 @@ public class GridCacheEvictionRequest extends GridCacheMessage implements GridCa
             return false;
 
         switch (reader.state()) {
-            case 3:
+            case 4:
                 entries = reader.readCollection("entries", MessageCollectionItemType.MSG);
 
                 if (!reader.isLastRead())
@@ -202,7 +202,7 @@ public class GridCacheEvictionRequest extends GridCacheMessage implements GridCa
 
                 reader.incrementState();
 
-            case 4:
+            case 5:
                 futId = reader.readLong("futId");
 
                 if (!reader.isLastRead())
@@ -210,7 +210,7 @@ public class GridCacheEvictionRequest extends GridCacheMessage implements GridCa
 
                 reader.incrementState();
 
-            case 5:
+            case 6:
                 topVer = reader.readMessage("topVer");
 
                 if (!reader.isLastRead())
@@ -230,7 +230,7 @@ public class GridCacheEvictionRequest extends GridCacheMessage implements GridCa
 
     /** {@inheritDoc} */
     @Override public byte fieldsCount() {
-        return 6;
+        return 7;
     }
 
     /** {@inheritDoc} */

@@ -93,7 +93,7 @@ public class GridDhtAffinityAssignmentResponse extends GridCacheMessage {
 
     /** {@inheritDoc} */
     @Override public byte fieldsCount() {
-        return 5;
+        return 6;
     }
 
     /**
@@ -129,13 +129,13 @@ public class GridDhtAffinityAssignmentResponse extends GridCacheMessage {
         }
 
         switch (writer.state()) {
-            case 3:
+            case 4:
                 if (!writer.writeByteArray("affAssignmentBytes", affAssignmentBytes))
                     return false;
 
                 writer.incrementState();
 
-            case 4:
+            case 5:
                 if (!writer.writeMessage("topVer", topVer))
                     return false;
 
@@ -157,7 +157,7 @@ public class GridDhtAffinityAssignmentResponse extends GridCacheMessage {
             return false;
 
         switch (reader.state()) {
-            case 3:
+            case 4:
                 affAssignmentBytes = reader.readByteArray("affAssignmentBytes");
 
                 if (!reader.isLastRead())
@@ -165,7 +165,7 @@ public class GridDhtAffinityAssignmentResponse extends GridCacheMessage {
 
                 reader.incrementState();
 
-            case 4:
+            case 5:
                 topVer = reader.readMessage("topVer");
 
                 if (!reader.isLastRead())

@@ -69,6 +69,9 @@ public abstract class GridCacheMessage implements Message {
     /** Cache ID. */
     protected int cacheId;
 
+    /** Dummy field to break backward compatibility. */
+    private boolean dummy;
+
     /**
      * Gets next ID for indexed message ID.
      *
@@ -635,6 +638,12 @@ public abstract class GridCacheMessage implements Message {
                 writer.incrementState();
 
             case 2:
+                if (!writer.writeBoolean("dummy", dummy))
+                    return false;
+
+                writer.incrementState();
+
+            case 3:
                 if (!writer.writeLong("msgId", msgId))
                     return false;
 
@@ -670,6 +679,14 @@ public abstract class GridCacheMessage implements Message {
                 reader.incrementState();
 
             case 2:
+                dummy = reader.readBoolean("dummy");
+
+                if (!reader.isLastRead())
+                    return false;
+
+                reader.incrementState();
+
+            case 3:
                 msgId = reader.readLong("msgId");
 
                 if (!reader.isLastRead())

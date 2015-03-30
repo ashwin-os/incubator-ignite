@@ -174,25 +174,25 @@ public class GridDhtForceKeysResponse extends GridCacheMessage implements GridCa
         }
 
         switch (writer.state()) {
-            case 3:
+            case 4:
                 if (!writer.writeIgniteUuid("futId", futId))
                     return false;
 
                 writer.incrementState();
 
-            case 4:
+            case 5:
                 if (!writer.writeCollection("infos", infos, MessageCollectionItemType.MSG))
                     return false;
 
                 writer.incrementState();
 
-            case 5:
+            case 6:
                 if (!writer.writeIgniteUuid("miniId", miniId))
                     return false;
 
                 writer.incrementState();
 
-            case 6:
+            case 7:
                 if (!writer.writeCollection("missedKeys", missedKeys, MessageCollectionItemType.MSG))
                     return false;
 
@@ -214,7 +214,7 @@ public class GridDhtForceKeysResponse extends GridCacheMessage implements GridCa
             return false;
 
         switch (reader.state()) {
-            case 3:
+            case 4:
                 futId = reader.readIgniteUuid("futId");
 
                 if (!reader.isLastRead())
@@ -222,7 +222,7 @@ public class GridDhtForceKeysResponse extends GridCacheMessage implements GridCa
 
                 reader.incrementState();
 
-            case 4:
+            case 5:
                 infos = reader.readCollection("infos", MessageCollectionItemType.MSG);
 
                 if (!reader.isLastRead())
@@ -230,7 +230,7 @@ public class GridDhtForceKeysResponse extends GridCacheMessage implements GridCa
 
                 reader.incrementState();
 
-            case 5:
+            case 6:
                 miniId = reader.readIgniteUuid("miniId");
 
                 if (!reader.isLastRead())
@@ -238,7 +238,7 @@ public class GridDhtForceKeysResponse extends GridCacheMessage implements GridCa
 
                 reader.incrementState();
 
-            case 6:
+            case 7:
                 missedKeys = reader.readCollection("missedKeys", MessageCollectionItemType.MSG);
 
                 if (!reader.isLastRead())
@@ -258,7 +258,7 @@ public class GridDhtForceKeysResponse extends GridCacheMessage implements GridCa
 
     /** {@inheritDoc} */
     @Override public byte fieldsCount() {
-        return 7;
+        return 8;
     }
 
     /** {@inheritDoc} */

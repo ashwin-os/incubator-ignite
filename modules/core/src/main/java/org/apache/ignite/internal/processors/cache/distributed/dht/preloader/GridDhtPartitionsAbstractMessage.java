@@ -89,13 +89,13 @@ abstract class GridDhtPartitionsAbstractMessage extends GridCacheMessage {
         }
 
         switch (writer.state()) {
-            case 3:
+            case 4:
                 if (!writer.writeMessage("exchId", exchId))
                     return false;
 
                 writer.incrementState();
 
-            case 4:
+            case 5:
                 if (!writer.writeMessage("lastVer", lastVer))
                     return false;
 
@@ -117,7 +117,7 @@ abstract class GridDhtPartitionsAbstractMessage extends GridCacheMessage {
             return false;
 
         switch (reader.state()) {
-            case 3:
+            case 4:
                 exchId = reader.readMessage("exchId");
 
                 if (!reader.isLastRead())
@@ -125,7 +125,7 @@ abstract class GridDhtPartitionsAbstractMessage extends GridCacheMessage {
 
                 reader.incrementState();
 
-            case 4:
+            case 5:
                 lastVer = reader.readMessage("lastVer");
 
                 if (!reader.isLastRead())

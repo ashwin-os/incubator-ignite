@@ -206,37 +206,37 @@ public class GridDhtPartitionDemandMessage extends GridCacheMessage {
         }
 
         switch (writer.state()) {
-            case 3:
+            case 4:
                 if (!writer.writeCollection("parts", parts, MessageCollectionItemType.INT))
                     return false;
 
                 writer.incrementState();
 
-            case 4:
+            case 5:
                 if (!writer.writeLong("timeout", timeout))
                     return false;
 
                 writer.incrementState();
 
-            case 5:
+            case 6:
                 if (!writer.writeMessage("topVer", topVer))
                     return false;
 
                 writer.incrementState();
 
-            case 6:
+            case 7:
                 if (!writer.writeByteArray("topicBytes", topicBytes))
                     return false;
 
                 writer.incrementState();
 
-            case 7:
+            case 8:
                 if (!writer.writeLong("updateSeq", updateSeq))
                     return false;
 
                 writer.incrementState();
 
-            case 8:
+            case 9:
                 if (!writer.writeInt("workerId", workerId))
                     return false;
 
@@ -258,7 +258,7 @@ public class GridDhtPartitionDemandMessage extends GridCacheMessage {
             return false;
 
         switch (reader.state()) {
-            case 3:
+            case 4:
                 parts = reader.readCollection("parts", MessageCollectionItemType.INT);
 
                 if (!reader.isLastRead())
@@ -266,7 +266,7 @@ public class GridDhtPartitionDemandMessage extends GridCacheMessage {
 
                 reader.incrementState();
 
-            case 4:
+            case 5:
                 timeout = reader.readLong("timeout");
 
                 if (!reader.isLastRead())
@@ -274,7 +274,7 @@ public class GridDhtPartitionDemandMessage extends GridCacheMessage {
 
                 reader.incrementState();
 
-            case 5:
+            case 6:
                 topVer = reader.readMessage("topVer");
 
                 if (!reader.isLastRead())
@@ -282,7 +282,7 @@ public class GridDhtPartitionDemandMessage extends GridCacheMessage {
 
                 reader.incrementState();
 
-            case 6:
+            case 7:
                 topicBytes = reader.readByteArray("topicBytes");
 
                 if (!reader.isLastRead())
@@ -290,7 +290,7 @@ public class GridDhtPartitionDemandMessage extends GridCacheMessage {
 
                 reader.incrementState();
 
-            case 7:
+            case 8:
                 updateSeq = reader.readLong("updateSeq");
 
                 if (!reader.isLastRead())
@@ -298,7 +298,7 @@ public class GridDhtPartitionDemandMessage extends GridCacheMessage {
 
                 reader.incrementState();
 
-            case 8:
+            case 9:
                 workerId = reader.readInt("workerId");
 
                 if (!reader.isLastRead())
@@ -318,7 +318,7 @@ public class GridDhtPartitionDemandMessage extends GridCacheMessage {
 
     /** {@inheritDoc} */
     @Override public byte fieldsCount() {
-        return 9;
+        return 10;
     }
 
     /** {@inheritDoc} */

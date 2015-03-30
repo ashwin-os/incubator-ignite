@@ -138,19 +138,19 @@ public class GridCacheEvictionResponse extends GridCacheMessage {
         }
 
         switch (writer.state()) {
-            case 3:
+            case 4:
                 if (!writer.writeBoolean("err", err))
                     return false;
 
                 writer.incrementState();
 
-            case 4:
+            case 5:
                 if (!writer.writeLong("futId", futId))
                     return false;
 
                 writer.incrementState();
 
-            case 5:
+            case 6:
                 if (!writer.writeCollection("rejectedKeys", rejectedKeys, MessageCollectionItemType.MSG))
                     return false;
 
@@ -172,7 +172,7 @@ public class GridCacheEvictionResponse extends GridCacheMessage {
             return false;
 
         switch (reader.state()) {
-            case 3:
+            case 4:
                 err = reader.readBoolean("err");
 
                 if (!reader.isLastRead())
@@ -180,7 +180,7 @@ public class GridCacheEvictionResponse extends GridCacheMessage {
 
                 reader.incrementState();
 
-            case 4:
+            case 5:
                 futId = reader.readLong("futId");
 
                 if (!reader.isLastRead())
@@ -188,7 +188,7 @@ public class GridCacheEvictionResponse extends GridCacheMessage {
 
                 reader.incrementState();
 
-            case 5:
+            case 6:
                 rejectedKeys = reader.readCollection("rejectedKeys", MessageCollectionItemType.MSG);
 
                 if (!reader.isLastRead())
@@ -208,7 +208,7 @@ public class GridCacheEvictionResponse extends GridCacheMessage {
 
     /** {@inheritDoc} */
     @Override public byte fieldsCount() {
-        return 6;
+        return 7;
     }
 
     /** {@inheritDoc} */

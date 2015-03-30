@@ -180,25 +180,25 @@ public class GridDhtAtomicUpdateResponse extends GridCacheMessage implements Gri
         }
 
         switch (writer.state()) {
-            case 3:
+            case 4:
                 if (!writer.writeByteArray("errBytes", errBytes))
                     return false;
 
                 writer.incrementState();
 
-            case 4:
+            case 5:
                 if (!writer.writeCollection("failedKeys", failedKeys, MessageCollectionItemType.MSG))
                     return false;
 
                 writer.incrementState();
 
-            case 5:
+            case 6:
                 if (!writer.writeMessage("futVer", futVer))
                     return false;
 
                 writer.incrementState();
 
-            case 6:
+            case 7:
                 if (!writer.writeCollection("nearEvicted", nearEvicted, MessageCollectionItemType.MSG))
                     return false;
 
@@ -220,7 +220,7 @@ public class GridDhtAtomicUpdateResponse extends GridCacheMessage implements Gri
             return false;
 
         switch (reader.state()) {
-            case 3:
+            case 4:
                 errBytes = reader.readByteArray("errBytes");
 
                 if (!reader.isLastRead())
@@ -228,7 +228,7 @@ public class GridDhtAtomicUpdateResponse extends GridCacheMessage implements Gri
 
                 reader.incrementState();
 
-            case 4:
+            case 5:
                 failedKeys = reader.readCollection("failedKeys", MessageCollectionItemType.MSG);
 
                 if (!reader.isLastRead())
@@ -236,7 +236,7 @@ public class GridDhtAtomicUpdateResponse extends GridCacheMessage implements Gri
 
                 reader.incrementState();
 
-            case 5:
+            case 6:
                 futVer = reader.readMessage("futVer");
 
                 if (!reader.isLastRead())
@@ -244,7 +244,7 @@ public class GridDhtAtomicUpdateResponse extends GridCacheMessage implements Gri
 
                 reader.incrementState();
 
-            case 6:
+            case 7:
                 nearEvicted = reader.readCollection("nearEvicted", MessageCollectionItemType.MSG);
 
                 if (!reader.isLastRead())
@@ -264,7 +264,7 @@ public class GridDhtAtomicUpdateResponse extends GridCacheMessage implements Gri
 
     /** {@inheritDoc} */
     @Override public byte fieldsCount() {
-        return 7;
+        return 8;
     }
 
     /** {@inheritDoc} */

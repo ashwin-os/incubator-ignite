@@ -87,7 +87,7 @@ public class GridDhtAtomicDeferredUpdateResponse extends GridCacheMessage implem
         }
 
         switch (writer.state()) {
-            case 3:
+            case 4:
                 if (!writer.writeCollection("futVers", futVers, MessageCollectionItemType.MSG))
                     return false;
 
@@ -109,7 +109,7 @@ public class GridDhtAtomicDeferredUpdateResponse extends GridCacheMessage implem
             return false;
 
         switch (reader.state()) {
-            case 3:
+            case 4:
                 futVers = reader.readCollection("futVers", MessageCollectionItemType.MSG);
 
                 if (!reader.isLastRead())
@@ -129,6 +129,6 @@ public class GridDhtAtomicDeferredUpdateResponse extends GridCacheMessage implem
 
     /** {@inheritDoc} */
     @Override public byte fieldsCount() {
-        return 4;
+        return 5;
     }
 }

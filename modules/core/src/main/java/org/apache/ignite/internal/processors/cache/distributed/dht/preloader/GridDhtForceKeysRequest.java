@@ -169,25 +169,25 @@ public class GridDhtForceKeysRequest extends GridCacheMessage implements GridCac
         }
 
         switch (writer.state()) {
-            case 3:
+            case 4:
                 if (!writer.writeIgniteUuid("futId", futId))
                     return false;
 
                 writer.incrementState();
 
-            case 4:
+            case 5:
                 if (!writer.writeCollection("keys", keys, MessageCollectionItemType.MSG))
                     return false;
 
                 writer.incrementState();
 
-            case 5:
+            case 6:
                 if (!writer.writeIgniteUuid("miniId", miniId))
                     return false;
 
                 writer.incrementState();
 
-            case 6:
+            case 7:
                 if (!writer.writeMessage("topVer", topVer))
                     return false;
 
@@ -209,7 +209,7 @@ public class GridDhtForceKeysRequest extends GridCacheMessage implements GridCac
             return false;
 
         switch (reader.state()) {
-            case 3:
+            case 4:
                 futId = reader.readIgniteUuid("futId");
 
                 if (!reader.isLastRead())
@@ -217,7 +217,7 @@ public class GridDhtForceKeysRequest extends GridCacheMessage implements GridCac
 
                 reader.incrementState();
 
-            case 4:
+            case 5:
                 keys = reader.readCollection("keys", MessageCollectionItemType.MSG);
 
                 if (!reader.isLastRead())
@@ -225,7 +225,7 @@ public class GridDhtForceKeysRequest extends GridCacheMessage implements GridCac
 
                 reader.incrementState();
 
-            case 5:
+            case 6:
                 miniId = reader.readIgniteUuid("miniId");
 
                 if (!reader.isLastRead())
@@ -233,7 +233,7 @@ public class GridDhtForceKeysRequest extends GridCacheMessage implements GridCac
 
                 reader.incrementState();
 
-            case 6:
+            case 7:
                 topVer = reader.readMessage("topVer");
 
                 if (!reader.isLastRead())
@@ -253,7 +253,7 @@ public class GridDhtForceKeysRequest extends GridCacheMessage implements GridCac
 
     /** {@inheritDoc} */
     @Override public byte fieldsCount() {
-        return 7;
+        return 8;
     }
 
     /** {@inheritDoc} */

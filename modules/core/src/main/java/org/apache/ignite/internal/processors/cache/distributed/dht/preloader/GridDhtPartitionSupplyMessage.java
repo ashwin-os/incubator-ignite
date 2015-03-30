@@ -272,37 +272,37 @@ public class GridDhtPartitionSupplyMessage extends GridCacheMessage implements G
         }
 
         switch (writer.state()) {
-            case 3:
+            case 4:
                 if (!writer.writeBoolean("ack", ack))
                     return false;
 
                 writer.incrementState();
 
-            case 4:
+            case 5:
                 if (!writer.writeMap("infos", infos, MessageCollectionItemType.INT, MessageCollectionItemType.MSG))
                     return false;
 
                 writer.incrementState();
 
-            case 5:
+            case 6:
                 if (!writer.writeCollection("last", last, MessageCollectionItemType.INT))
                     return false;
 
                 writer.incrementState();
 
-            case 6:
+            case 7:
                 if (!writer.writeCollection("missed", missed, MessageCollectionItemType.INT))
                     return false;
 
                 writer.incrementState();
 
-            case 7:
+            case 8:
                 if (!writer.writeLong("updateSeq", updateSeq))
                     return false;
 
                 writer.incrementState();
 
-            case 8:
+            case 9:
                 if (!writer.writeInt("workerId", workerId))
                     return false;
 
@@ -324,7 +324,7 @@ public class GridDhtPartitionSupplyMessage extends GridCacheMessage implements G
             return false;
 
         switch (reader.state()) {
-            case 3:
+            case 4:
                 ack = reader.readBoolean("ack");
 
                 if (!reader.isLastRead())
@@ -332,7 +332,7 @@ public class GridDhtPartitionSupplyMessage extends GridCacheMessage implements G
 
                 reader.incrementState();
 
-            case 4:
+            case 5:
                 infos = reader.readMap("infos", MessageCollectionItemType.INT, MessageCollectionItemType.MSG, false);
 
                 if (!reader.isLastRead())
@@ -340,7 +340,7 @@ public class GridDhtPartitionSupplyMessage extends GridCacheMessage implements G
 
                 reader.incrementState();
 
-            case 5:
+            case 6:
                 last = reader.readCollection("last", MessageCollectionItemType.INT);
 
                 if (!reader.isLastRead())
@@ -348,7 +348,7 @@ public class GridDhtPartitionSupplyMessage extends GridCacheMessage implements G
 
                 reader.incrementState();
 
-            case 6:
+            case 7:
                 missed = reader.readCollection("missed", MessageCollectionItemType.INT);
 
                 if (!reader.isLastRead())
@@ -356,7 +356,7 @@ public class GridDhtPartitionSupplyMessage extends GridCacheMessage implements G
 
                 reader.incrementState();
 
-            case 7:
+            case 8:
                 updateSeq = reader.readLong("updateSeq");
 
                 if (!reader.isLastRead())
@@ -364,7 +364,7 @@ public class GridDhtPartitionSupplyMessage extends GridCacheMessage implements G
 
                 reader.incrementState();
 
-            case 8:
+            case 9:
                 workerId = reader.readInt("workerId");
 
                 if (!reader.isLastRead())
@@ -384,7 +384,7 @@ public class GridDhtPartitionSupplyMessage extends GridCacheMessage implements G
 
     /** {@inheritDoc} */
     @Override public byte fieldsCount() {
-        return 9;
+        return 10;
     }
 
     /** {@inheritDoc} */
