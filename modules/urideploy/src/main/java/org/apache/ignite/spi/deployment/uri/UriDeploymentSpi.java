@@ -28,7 +28,6 @@ import org.apache.ignite.spi.*;
 import org.apache.ignite.spi.deployment.*;
 import org.apache.ignite.spi.deployment.uri.scanners.*;
 import org.apache.ignite.spi.deployment.uri.scanners.file.*;
-import org.apache.ignite.spi.deployment.uri.scanners.ftp.*;
 import org.apache.ignite.spi.deployment.uri.scanners.http.*;
 import org.jetbrains.annotations.*;
 
@@ -39,7 +38,7 @@ import java.util.Map.*;
 
 /**
  * Implementation of {@link org.apache.ignite.spi.deployment.DeploymentSpi} which can deploy tasks from
- * different sources like file system folders, FTP, email and HTTP.
+ * different sources like file system folders, email and HTTP.
  * There are different ways to deploy tasks in grid and every deploy method
  * depends on selected source protocol. This SPI is configured to work
  * with a list of URI's. Every URI contains all data about protocol/transport
@@ -140,7 +139,6 @@ import java.util.Map.*;
  * <ul>
  * <li><a href="#file">file://</a> - File protocol</li>
  * <li><a href="#classes">classes://</a> - Custom File protocol.</li>
- * <li><a href="#ftp">ftp://</a> - File transfer protocol</li>
  * <li><a href="#http">http://</a> - HTTP protocol</li>
  * <li><a href="#http">https://</a> - Secure HTTP protocol</li>
  * </ul>
@@ -209,42 +207,7 @@ import java.util.Map.*;
  * <blockquote class="snippet">
  * {@code classes://freq=5000@localhost/c:/Program files/ignite/deployment}
  * </blockquote>
- * <a name="ftp"></a>
- * <h1 class="header">FTP</h1>
- * For FTP protocol SPI will scan and download only GAR files from source
- * directory defined in URI. SPI doesn't scan FTP folders recursively.
- * The following parameters are supported for FTP protocol:
- * <table class="doctable">
- *  <tr>
- *      <th>Parameter</th>
- *      <th>Description</th>
- *      <th>Optional</th>
- *      <th>Default</th>
- *  </tr>
- *  <tr>
- *      <td>freq</td>
- *      <td>FTP location scan frequency in milliseconds.</td>
- *      <td>Yes</td>
- *      <td>{@code 300000} ms specified in {@link #DFLT_FTP_SCAN_FREQUENCY DFLT_FTP_SCAN_FREQUENCY}.</td>
- *  </tr>
- *  <tr>
- *      <td>username:password</td>
- *      <td>
- *          FTP username and password specified in standard URI server-based
- *          authority format.
- *      </td>
- *      <td>No</td>
- *      <td>---</td>
- *  </tr>
- * </table>
- * <h2 class="header">FTP URI Example</h2>
- * Here is an example of an FTP URI that connects identified as
- * {@code username:password} to {@code 'localhost'} on port {@code '21'},
- * with initial path set to {@code 'ignite/deployment'}
- * <blockquote class="snippet">
- * ftp://username:password;freq=10000@localhost:21/ignite/deployment
- * </blockquote>
- * <p>
+ * <a name="http"></a>
  * <h2 class="header">HTTP URI Example</h2>
  * The following example will scan {@code 'ignite/deployment'} folder with
  * on site {@code 'www.mysite.com'} using authentication
@@ -262,7 +225,6 @@ import java.util.Map.*;
  * List&lt;String&gt; uris = new ArrayList&lt;String&gt;(5);
  *
  * uris.add("http://www.site.com/tasks");
- * uris.add("ftp://ftpuser:password;freq=10000@localhost:21/gg-test/deployment");
  * uris.add("file://freq=20000@localhost/c:/Program files/gg-deployment");
  * uris.add("classes:///c:/Java_Projects/myproject/out");
  *
@@ -290,7 +252,6 @@ import java.util.Map.*;
  *                 &lt;property name="uriList"&gt;
  *                     &lt;list&gt;
  *                         &lt;value&gt;http://www.site.com/tasks&lt;/value&gt;
- *                         &lt;value&gt;ftp://ftpuser:password;freq=10000@localhost:21/gg-test/deployment&lt;/value&gt;
  *                         &lt;value&gt;file://freq=20000@localhost/c:/Program files/gg-deployment&lt;/value&gt;
  *                         &lt;value&gt;classes:///c:/Java_Projects/myproject/out&lt;/value&gt;
  *                     &lt;/list&gt;
@@ -321,9 +282,6 @@ public class UriDeploymentSpi extends IgniteSpiAdapter implements DeploymentSpi,
 
     /** Default scan frequency for {@code file://} and {@code classes://} protocols (value is {@code 5000}). */
     public static final int DFLT_DISK_SCAN_FREQUENCY = 5000;
-
-    /** Default scan frequency for {@code ftp://} protocol (value is {@code 300000}). */
-    public static final int DFLT_FTP_SCAN_FREQUENCY = 300000;
 
     /** Default scan frequency for {@code http://} protocol (value is {@code 300000}). */
     public static final int DFLT_HTTP_SCAN_FREQUENCY = 300000;
@@ -615,11 +573,6 @@ public class UriDeploymentSpi extends IgniteSpiAdapter implements DeploymentSpi,
                 case "https":
                     scanner = new GridUriDeploymentHttpScanner(gridName, uri, file, freq > 0 ? freq :
                         DFLT_HTTP_SCAN_FREQUENCY, filter, lsnr, log);
-                    break;
-
-                case "ftp":
-                    scanner = new GridUriDeploymentFtpScanner(gridName, uri, file, freq > 0 ? freq :
-                        DFLT_FTP_SCAN_FREQUENCY, filter, lsnr, log);
                     break;
 
                 default:
@@ -943,28 +896,6 @@ public class UriDeploymentSpi extends IgniteSpiAdapter implements DeploymentSpi,
         }
 
         return res;
-    }
-
-    /**
-     * Gets resource name for a given class name.
-     *
-     * @param clsName Class name.
-     * @param rsrcs Map of resources.
-     * @return Resource name.
-     */
-    private String getResourceName(String clsName, Map<String, String> rsrcs) {
-        assert Thread.holdsLock(mux);
-
-        String rsrcName = clsName;
-
-        for (Entry<String, String> e : rsrcs.entrySet())
-            if (e.getValue().equals(clsName) && !e.getKey().equals(clsName)) {
-                rsrcName = e.getKey();
-
-                break;
-            }
-
-        return rsrcName;
     }
 
     /**
